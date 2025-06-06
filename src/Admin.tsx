@@ -484,283 +484,326 @@ export default function Admin() {
   return (
     <>
       <style>{`
-        html, body, #root, #admin-desktop-only { height: 100%; width: 100%; margin: 0; padding: 0; }
-        #admin-desktop-only { min-height: 100vh; min-width: 100vw; background: #181818; }
-        @media (max-width: 900px) {
-          #admin-desktop-only { display: none; }
-          #admin-mobile-msg { display: flex; }
+        html, body, #root { 
+          height: 100%; 
+          width: 100%; 
+          margin: 0; 
+          padding: 0; 
+          background: #181818; 
         }
-        @media (min-width: 901px) {
-          #admin-desktop-only { display: block; }
-          #admin-mobile-msg { display: none; }
+        
+        /* Mobile-friendly styles */
+        @media (max-width: 768px) {
+          .admin-layout {
+            padding: 12px !important;
+          }
+          
+          .admin-header {
+            font-size: 24px !important;
+            margin-bottom: 16px !important;
+          }
+          
+          .tab-buttons {
+            flex-direction: row !important;
+            overflow-x: auto !important;
+            padding-bottom: 8px !important;
+            margin-bottom: 16px !important;
+            gap: 8px !important;
+          }
+          
+          .tab-button {
+            font-size: 14px !important;
+            padding: 8px 16px !important;
+            white-space: nowrap !important;
+          }
+          
+          .menu-management {
+            width: 100% !important;
+            margin-bottom: 16px !important;
+          }
+          
+          .menu-table {
+            width: 100% !important;
+            overflow-x: auto !important;
+          }
+          
+          .flex-layout {
+            flex-direction: column !important;
+          }
+          
+          .table-container {
+            margin-top: 16px !important;
+            overflow-x: auto !important;
+          }
+          
+          table {
+            min-width: 600px !important;
+          }
         }
       `}</style>
-      <div id="admin-mobile-msg" style={{ minHeight: "100vh", alignItems: "center", justifyContent: "center", background: "#181818", color: "#fff", fontSize: 24, display: "none" }}>
-        <div style={{ margin: "auto", textAlign: "center" }}>
-          <b>Admin panel is only available on desktop/laptop screens.</b>
-          <br />
-          Please use a computer to access the admin dashboard.
+
+      <div className="admin-layout" style={{ padding: 24, maxWidth: '100vw', margin: 0, background: "#181818", minHeight: "100vh" }}>
+        <audio ref={audioRef} src="/notification.mp3" />
+        
+        <h1 className="admin-header" style={{ fontSize: 36, marginBottom: 32, color: "#fff", textAlign: "center", letterSpacing: 1 }}>Admin Panel</h1>
+        
+        <div className="tab-buttons" style={{ display: "flex", justifyContent: "center", gap: 16, marginBottom: 32 }}>
+          <button className="tab-button" onClick={() => setTab("orders")} style={{ fontSize: 18, padding: "10px 32px", cursor: "pointer", backgroundColor: tab === "orders" ? "#007bff" : "#232323", color: "#fff", border: "none", borderRadius: 8, fontWeight: 600 }}>Orders</button>
+          <button className="tab-button" onClick={() => setTab("menu")} style={{ fontSize: 18, padding: "10px 32px", cursor: "pointer", backgroundColor: tab === "menu" ? "#007bff" : "#232323", color: "#fff", border: "none", borderRadius: 8, fontWeight: 600 }}>Menu</button>
+          <button className="tab-button" onClick={() => setTab("history")} style={{ fontSize: 18, padding: "10px 32px", cursor: "pointer", backgroundColor: tab === "history" ? "#007bff" : "#232323", color: "#fff", border: "none", borderRadius: 8, fontWeight: 600 }}>History</button>
         </div>
-      </div>
-      <div id="admin-desktop-only">
-        <div style={{ padding: 24, maxWidth: '100vw', margin: 0, background: "#181818", minHeight: "100vh" }}>
-          <audio ref={audioRef} src="/notification.mp3" />
-          <h1 style={{ fontSize: 36, marginBottom: 32, color: "#fff", textAlign: "center", letterSpacing: 1 }}>Admin Panel</h1>
-          <div style={{ display: "flex", justifyContent: "center", gap: 16, marginBottom: 32 }}>
-            <button onClick={() => setTab("orders")} style={{ fontSize: 18, padding: "10px 32px", cursor: "pointer", backgroundColor: tab === "orders" ? "#007bff" : "#232323", color: tab === "orders" ? "#fff" : "#fff", border: "none", borderRadius: 8, fontWeight: 600, boxShadow: tab === "orders" ? "0 2px 8px #007bff44" : undefined }}>Orders</button>
-            <button onClick={() => setTab("menu")} style={{ fontSize: 18, padding: "10px 32px", cursor: "pointer", backgroundColor: tab === "menu" ? "#007bff" : "#232323", color: tab === "menu" ? "#fff" : "#fff", border: "none", borderRadius: 8, fontWeight: 600, boxShadow: tab === "menu" ? "0 2px 8px #007bff44" : undefined }}>Menu</button>
-            <button onClick={() => setTab("history")} style={{ fontSize: 18, padding: "10px 32px", cursor: "pointer", backgroundColor: tab === "history" ? "#007bff" : "#232323", color: tab === "history" ? "#fff" : "#fff", border: "none", borderRadius: 8, fontWeight: 600, boxShadow: tab === "history" ? "0 2px 8px #007bff44" : undefined }}>History</button>
-          </div>
-          {toast && <Toast message={toast} onClose={() => setToast(null)} />}
-          {/* --- MENU TAB --- */}
-          {tab === "menu" && (
-            <div style={{ display: "flex", flexDirection: "row", alignItems: "flex-start", gap: 32, width: "100%", justifyContent: "center" }}>
-              {/* Menu Management (Left) */}
-              <div style={{ background: "#232323", borderRadius: 16, padding: 32, marginBottom: 32, boxShadow: "0 2px 16px #0002", width: 400, maxWidth: 500, minWidth: 340, flexShrink: 0 }}>
-                <h2 style={{ color: "#fff", marginBottom: 24, textAlign: "center" }}>Menu Management</h2>
-                <input type="text" placeholder="Item Name" value={newItem.name} onChange={e => setNewItem({ ...newItem, name: e.target.value })} style={{ padding: 12, marginBottom: 12, borderRadius: 6, border: "1px solid #444", fontSize: 16, width: "100%", background: "#181818", color: "#fff" }} />
-                {/* Category dropdown with add option */}
-                <div style={{ marginBottom: 12 }}>
-                  <select
-                    value={showAddCategory ? "__add_new__" : (newItem.category || "")}
-                    onChange={e => {
-                      if (e.target.value === "__add_new__") {
-                        setShowAddCategory(true);
-                        setNewCategory("");
-                      } else {
-                        setShowAddCategory(false);
-                        setNewItem({ ...newItem, category: e.target.value });
-                        setInsertPosition("0"); // Reset position when category changes
-                      }
-                    }}
-                    style={{ padding: 12, borderRadius: 6, border: "1px solid #444", fontSize: 16, width: "100%", background: "#181818", color: "#fff" }}
-                  >
-                    <option value="" disabled>Select Category</option>
-                    {categories.map(cat => (
-                      <option key={cat} value={cat}>{cat}</option>
-                    ))}
-                    <option value="__add_new__">+ Add new section</option>
-                  </select>
-                  {showAddCategory && (
-                    <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
-                      <input
-                        type="text"
-                        placeholder="New section name"
-                        value={newCategory}
-                        onChange={e => setNewCategory(e.target.value)}
-                        style={{ flex: 1, padding: 10, borderRadius: 6, border: "1px solid #444", fontSize: 15, background: "#181818", color: "#fff" }}
-                      />
-                      <button
-                        style={{ padding: "8px 14px", borderRadius: 6, border: "none", background: "#28a745", color: "#fff", fontWeight: 600, cursor: "pointer" }}
-                        onClick={() => {
-                          if (newCategory.trim()) {
-                            setCategories(cats => [...cats, newCategory.trim()]);
-                            setNewItem(item => ({ ...item, category: newCategory.trim() }));
-                            setShowAddCategory(false);
-                            setInsertPosition("0");
-                          }
-                        }}
-                      >Add</button>
-                      <button
-                        style={{ padding: "8px 10px", borderRadius: 6, border: "none", background: "#dc3545", color: "#fff", fontWeight: 600, cursor: "pointer" }}
-                        onClick={() => setShowAddCategory(false)}
-                      >Cancel</button>
-                    </div>
-                  )}
-                </div>
-                <input type="text" placeholder="Extras" value={newItem.extras} onChange={e => setNewItem({ ...newItem, extras: e.target.value })} style={{ padding: 12, marginBottom: 12, borderRadius: 6, border: "1px solid #444", fontSize: 16, width: "100%", background: "#181818", color: "#fff" }} />
-                <input type="number" placeholder="Price" value={newItem.price !== null ? newItem.price : ""} onChange={e => setNewItem({ ...newItem, price: e.target.value ? parseFloat(e.target.value) : null })} style={{ padding: 12, marginBottom: 12, borderRadius: 6, border: "1px solid #444", fontSize: 16, width: "100%", background: "#181818", color: "#fff" }} />
-                {/* Extra Options Section */}
-                <div style={{ marginBottom: 16 }}>
-                  <label style={{ color: '#fff', fontWeight: 600, marginBottom: 6, display: 'block' }}>Extra Options</label>
-                  {(newItem.extraOptions || []).map((opt, idx) => (
-                    <div key={idx} style={{ display: 'flex', gap: 8, marginBottom: 8, alignItems: 'center', flexWrap: 'wrap' }}>
-                      <input
-                        type="text"
-                        placeholder="Option Name"
-                        value={opt.name || ''}
-                        onChange={e => {
-                          const updated = [...(newItem.extraOptions || [])];
-                          updated[idx] = { ...updated[idx], name: e.target.value };
-                          setNewItem(item => ({ ...item, extraOptions: updated }));
-                        }}
-                        style={{ flex: 2, minWidth: 0, padding: 10, borderRadius: 6, border: '1px solid #444', fontSize: 15, background: '#181818', color: '#fff' }}
-                      />
-                      <input
-                        type="number"
-                        placeholder="Price"
-                        value={opt.price !== undefined && opt.price !== null ? opt.price : ''}
-                        onChange={e => {
-                          const updated = [...(newItem.extraOptions || [])];
-                          updated[idx] = { ...updated[idx], price: e.target.value ? parseFloat(e.target.value) : 0 };
-                          setNewItem(item => ({ ...item, extraOptions: updated }));
-                        }}
-                        style={{ flex: 1, minWidth: 0, padding: 10, borderRadius: 6, border: '1px solid #444', fontSize: 15, background: '#181818', color: '#fff' }}
-                      />
-                      <button
-                        type="button"
-                        style={{ padding: '8px 14px', borderRadius: 6, border: 'none', background: '#dc3545', color: '#fff', fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap', marginLeft: 4 }}
-                        onClick={() => {
-                          const updated = [...(newItem.extraOptions || [])];
-                          updated.splice(idx, 1);
-                          setNewItem(item => ({ ...item, extraOptions: updated }));
-                        }}
-                      >Remove</button>
-                    </div>
+
+        {toast && <Toast message={toast} onClose={() => setToast(null)} />}
+        
+        {/* Menu Tab */}
+        {tab === "menu" && (
+          <div className="flex-layout" style={{ display: "flex", flexDirection: "row", alignItems: "flex-start", gap: 32, width: "100%", justifyContent: "center" }}>
+            {/* Menu Management Panel */}
+            <div className="menu-management" style={{ background: "#232323", borderRadius: 16, padding: 32, marginBottom: 32, boxShadow: "0 2px 16px #0002", width: 400, maxWidth: "100%", flexShrink: 0 }}>
+              <h2 style={{ color: "#fff", marginBottom: 24, textAlign: "center" }}>Menu Management</h2>
+              <input type="text" placeholder="Item Name" value={newItem.name} onChange={e => setNewItem({ ...newItem, name: e.target.value })} style={{ padding: 12, marginBottom: 12, borderRadius: 6, border: "1px solid #444", fontSize: 16, width: "100%", background: "#181818", color: "#fff" }} />
+              {/* Category dropdown with add option */}
+              <div style={{ marginBottom: 12 }}>
+                <select
+                  value={showAddCategory ? "__add_new__" : (newItem.category || "")}
+                  onChange={e => {
+                    if (e.target.value === "__add_new__") {
+                      setShowAddCategory(true);
+                      setNewCategory("");
+                    } else {
+                      setShowAddCategory(false);
+                      setNewItem({ ...newItem, category: e.target.value });
+                      setInsertPosition("0"); // Reset position when category changes
+                    }
+                  }}
+                  style={{ padding: 12, borderRadius: 6, border: "1px solid #444", fontSize: 16, width: "100%", background: "#181818", color: "#fff" }}
+                >
+                  <option value="" disabled>Select Category</option>
+                  {categories.map(cat => (
+                    <option key={cat} value={cat}>{cat}</option>
                   ))}
-                  <button
-                    type="button"
-                    style={{ padding: '8px 14px', borderRadius: 6, border: 'none', background: '#007bff', color: '#fff', fontWeight: 600, cursor: 'pointer', marginTop: 4 }}
-                    onClick={() => {
-                      setNewItem(item => ({ ...item, extraOptions: [...(item.extraOptions || []), { name: '', price: 0 }] }));
-                    }}
-                  >+ Add Extra Option</button>
-                </div>
-                <div style={{ marginBottom: 16, display: "flex", alignItems: "center", gap: 12 }}>
-                  <button type="button" onClick={() => setShowImagePicker(true)} style={{ padding: "8px 16px", borderRadius: 6, border: "none", background: "#007bff", color: "#fff", cursor: "pointer", fontWeight: 600 }}>Pick Image</button>
-                  {showPreview && newItem.image && (
-                    <img src={newItem.image} alt="preview" style={{ width: 48, height: 48, objectFit: "cover", borderRadius: 6, border: "1px solid #444" }} />
-                  )}
-                </div>
-                {/* Insert Position Dropdown */}
-                {newItem.category && !showAddCategory && (
-                  <div style={{ marginBottom: 12 }}>
-                    <select
-                      value={insertPosition}
-                      onChange={e => setInsertPosition(e.target.value)}
-                      style={{ padding: 12, borderRadius: 6, border: "1px solid #444", fontSize: 16, width: "100%", background: "#181818", color: "#fff" }}
-                    >
-                      <option value="0">At Top</option>
-                      {menu.filter(item => item.category === newItem.category).map((item, idx) => (
-                        <option key={item.id} value={String(idx + 1)}>
-                          {`After: ${item.name}`}
-                        </option>
-                      ))}
-                    </select>
+                  <option value="__add_new__">+ Add new section</option>
+                </select>
+                {showAddCategory && (
+                  <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
+                    <input
+                      type="text"
+                      placeholder="New section name"
+                      value={newCategory}
+                      onChange={e => setNewCategory(e.target.value)}
+                      style={{ flex: 1, padding: 10, borderRadius: 6, border: "1px solid #444", fontSize: 15, background: "#181818", color: "#fff" }}
+                    />
+                    <button
+                      style={{ padding: "8px 14px", borderRadius: 6, border: "none", background: "#28a745", color: "#fff", fontWeight: 600, cursor: "pointer" }}
+                      onClick={() => {
+                        if (newCategory.trim()) {
+                          setCategories(cats => [...cats, newCategory.trim()]);
+                          setNewItem(item => ({ ...item, category: newCategory.trim() }));
+                          setShowAddCategory(false);
+                          setInsertPosition("0");
+                        }
+                      }}
+                    >Add</button>
+                    <button
+                      style={{ padding: "8px 10px", borderRadius: 6, border: "none", background: "#dc3545", color: "#fff", fontWeight: 600, cursor: "pointer" }}
+                      onClick={() => setShowAddCategory(false)}
+                    >Cancel</button>
                   </div>
                 )}
-                <button onClick={editIdx !== null ? handleSaveEdit : handleAddMenuItem} style={{ padding: "12px 24px", borderRadius: 6, border: "none", backgroundColor: "#28a745", color: "#fff", fontSize: 18, fontWeight: 600, width: "100%", cursor: "pointer", marginTop: 8 }}>{editIdx !== null ? "Save Changes" : "Add to Menu"}</button>
               </div>
-              {/* Menu Table (Right) - make this scrollable */}
-              <div style={{ width: "100%", maxWidth: 900, background: "#232323", borderRadius: 16, boxShadow: "0 2px 16px #0002", padding: 24, minHeight: 500, maxHeight: '80vh', overflowY: 'auto', position: 'relative' }}>
-                <table style={{ width: "100%", borderCollapse: "collapse", color: "#fff" }}>
-                  <thead style={{ position: "sticky", top: 0, background: "#232323", zIndex: 2, boxShadow: '0 2px 8px #0004' }}>
-                    <tr style={{ borderBottom: "2px solid #007bff" }}>
-                      <th style={{ padding: 12, textAlign: "left", background: "#232323" }}>ID</th>
-                      <th style={{ padding: 12, textAlign: "left", background: "#232323" }}>Name</th>
-                      <th style={{ padding: 12, textAlign: "left", background: "#232323" }}>Category</th>
-                      <th style={{ padding: 12, textAlign: "left", background: "#232323" }}>Price</th>
-                      <th style={{ padding: 12, textAlign: "left", background: "#232323" }}>Image</th>
-                      <th style={{ padding: 12, textAlign: "left", background: "#232323" }}>Actions</th>
+              <input type="text" placeholder="Extras" value={newItem.extras} onChange={e => setNewItem({ ...newItem, extras: e.target.value })} style={{ padding: 12, marginBottom: 12, borderRadius: 6, border: "1px solid #444", fontSize: 16, width: "100%", background: "#181818", color: "#fff" }} />
+              <input type="number" placeholder="Price" value={newItem.price !== null ? newItem.price : ""} onChange={e => setNewItem({ ...newItem, price: e.target.value ? parseFloat(e.target.value) : null })} style={{ padding: 12, marginBottom: 12, borderRadius: 6, border: "1px solid #444", fontSize: 16, width: "100%", background: "#181818", color: "#fff" }} />
+              {/* Extra Options Section */}
+              <div style={{ marginBottom: 16 }}>
+                <label style={{ color: '#fff', fontWeight: 600, marginBottom: 6, display: 'block' }}>Extra Options</label>
+                {(newItem.extraOptions || []).map((opt, idx) => (
+                  <div key={idx} style={{ display: 'flex', gap: 8, marginBottom: 8, alignItems: 'center', flexWrap: 'wrap' }}>
+                    <input
+                      type="text"
+                      placeholder="Option Name"
+                      value={opt.name || ''}
+                      onChange={e => {
+                        const updated = [...(newItem.extraOptions || [])];
+                        updated[idx] = { ...updated[idx], name: e.target.value };
+                        setNewItem(item => ({ ...item, extraOptions: updated }));
+                      }}
+                      style={{ flex: 2, minWidth: 0, padding: 10, borderRadius: 6, border: '1px solid #444', fontSize: 15, background: '#181818', color: '#fff' }}
+                    />
+                    <input
+                      type="number"
+                      placeholder="Price"
+                      value={opt.price !== undefined && opt.price !== null ? opt.price : ''}
+                      onChange={e => {
+                        const updated = [...(newItem.extraOptions || [])];
+                        updated[idx] = { ...updated[idx], price: e.target.value ? parseFloat(e.target.value) : 0 };
+                        setNewItem(item => ({ ...item, extraOptions: updated }));
+                      }}
+                      style={{ flex: 1, minWidth: 0, padding: 10, borderRadius: 6, border: '1px solid #444', fontSize: 15, background: '#181818', color: '#fff' }}
+                    />
+                    <button
+                      type="button"
+                      style={{ padding: '8px 14px', borderRadius: 6, border: 'none', background: '#dc3545', color: '#fff', fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap', marginLeft: 4 }}
+                      onClick={() => {
+                        const updated = [...(newItem.extraOptions || [])];
+                        updated.splice(idx, 1);
+                        setNewItem(item => ({ ...item, extraOptions: updated }));
+                      }}
+                    >Remove</button>
+                  </div>
+                ))}
+                <button
+                  type="button"
+                  style={{ padding: '8px 14px', borderRadius: 6, border: 'none', background: '#007bff', color: '#fff', fontWeight: 600, cursor: 'pointer', marginTop: 4 }}
+                  onClick={() => {
+                    setNewItem(item => ({ ...item, extraOptions: [...(item.extraOptions || []), { name: '', price: 0 }] }));
+                  }}
+                >+ Add Extra Option</button>
+              </div>
+              <div style={{ marginBottom: 16, display: "flex", alignItems: "center", gap: 12 }}>
+                <button type="button" onClick={() => setShowImagePicker(true)} style={{ padding: "8px 16px", borderRadius: 6, border: "none", background: "#007bff", color: "#fff", cursor: "pointer", fontWeight: 600 }}>Pick Image</button>
+                {showPreview && newItem.image && (
+                  <img src={newItem.image} alt="preview" style={{ width: 48, height: 48, objectFit: "cover", borderRadius: 6, border: "1px solid #444" }} />
+                )}
+              </div>
+              {/* Insert Position Dropdown */}
+              {newItem.category && !showAddCategory && (
+                <div style={{ marginBottom: 12 }}>
+                  <select
+                    value={insertPosition}
+                    onChange={e => setInsertPosition(e.target.value)}
+                    style={{ padding: 12, borderRadius: 6, border: "1px solid #444", fontSize: 16, width: "100%", background: "#181818", color: "#fff" }}
+                  >
+                    <option value="0">At Top</option>
+                    {menu.filter(item => item.category === newItem.category).map((item, idx) => (
+                      <option key={item.id} value={String(idx + 1)}>
+                        {`After: ${item.name}`}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+              <button onClick={editIdx !== null ? handleSaveEdit : handleAddMenuItem} style={{ padding: "12px 24px", borderRadius: 6, border: "none", backgroundColor: "#28a745", color: "#fff", fontSize: 18, fontWeight: 600, width: "100%", cursor: "pointer", marginTop: 8 }}>{editIdx !== null ? "Save Changes" : "Add to Menu"}</button>
+            </div>
+
+            {/* Menu Table */}
+            <div className="table-container menu-table" style={{ width: "100%", maxWidth: 900, background: "#232323", borderRadius: 16, boxShadow: "0 2px 16px #0002", padding: 24, minHeight: 500, maxHeight: '80vh', overflowY: 'auto' }}>
+              <table style={{ width: "100%", borderCollapse: "collapse", color: "#fff" }}>
+                <thead style={{ position: "sticky", top: 0, background: "#232323", zIndex: 2, boxShadow: '0 2px 8px #0004' }}>
+                  <tr style={{ borderBottom: "2px solid #007bff" }}>
+                    <th style={{ padding: 12, textAlign: "left", background: "#232323" }}>ID</th>
+                    <th style={{ padding: 12, textAlign: "left", background: "#232323" }}>Name</th>
+                    <th style={{ padding: 12, textAlign: "left", background: "#232323" }}>Category</th>
+                    <th style={{ padding: 12, textAlign: "left", background: "#232323" }}>Price</th>
+                    <th style={{ padding: 12, textAlign: "left", background: "#232323" }}>Image</th>
+                    <th style={{ padding: 12, textAlign: "left", background: "#232323" }}>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {menu.map((item, idx) => (
+                    <tr key={item.id} style={{ borderBottom: "1px solid #333", background: idx % 2 === 0 ? "#232323" : "#181818" }}>
+                      <td style={{ padding: 12 }}>{item.id}</td>
+                      <td style={{ padding: 12 }}>{item.name}</td>
+                      <td style={{ padding: 12 }}>{item.category}</td>
+                      <td style={{ padding: 12 }}>{item.price !== null ? `₹${item.price}` : "N/A"}</td>
+                      <td style={{ padding: 12 }}>{item.image && <img src={item.image} alt="img" style={{ width: 48, borderRadius: 6, objectFit: "cover" }} />}</td>
+                      <td style={{ padding: 12 }}>
+                        <button onClick={() => handleEditMenuItem(idx)} style={{ padding: "6px 12px", borderRadius: 6, border: "none", backgroundColor: "#007bff", color: "#fff", cursor: "pointer", marginRight: 8 }}>Edit</button>
+                        <button onClick={() => handleRemoveMenuItem(item.id)} style={{ padding: "6px 12px", borderRadius: 6, border: "none", backgroundColor: "#dc3545", color: "#fff", cursor: "pointer" }}>Remove</button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            {/* Image Picker Modal with upload */}
+            <ImagePicker open={showImagePicker} images={imgUrls} onSelect={url => { setNewItem(item => ({ ...item, image: url })); setShowPreview(true); }} onClose={() => setShowImagePicker(false)} onUpload={handleImageUpload} uploading={uploading} setUploading={setUploading} />
+          </div>
+        )}
+
+        {/* Orders Tab */}
+        {tab === "orders" && (
+          <div className="table-container">
+            <h2 style={{ fontSize: 24, marginBottom: 16, color: "#fff" }}>Current Orders</h2>
+            <button onClick={clearOrders} style={{ marginBottom: 16, padding: "8px 16px", cursor: "pointer", backgroundColor: "#dc3545", color: "#fff", border: "none", borderRadius: 4 }}>
+              Clear All Orders
+            </button>
+            <div style={{ maxHeight: 600, overflowY: "auto", marginBottom: 24 }}>
+              {orders.length === 0 ? (
+                <p style={{ textAlign: "center", color: "#888" }}>No new orders</p>
+              ) : (
+                <table style={{ width: "100%", borderCollapse: "collapse" }}>
+                  <thead>
+                    <tr style={{ backgroundColor: "#f2f2f2", borderBottom: "2px solid #007bff" }}>
+                      <th style={{ padding: 12, textAlign: "left" }}>ID</th>
+                      <th style={{ padding: 12, textAlign: "left" }}>Items</th>
+                      <th style={{ padding: 12, textAlign: "left" }}>Name</th>
+                      <th style={{ padding: 12, textAlign: "left" }}>Phone</th>
+                      <th style={{ padding: 12, textAlign: "left" }}>Date</th>
+                      <th style={{ padding: 12, textAlign: "left" }}>Status</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {menu.map((item, idx) => (
-                      <tr key={item.id} style={{ borderBottom: "1px solid #333", background: idx % 2 === 0 ? "#232323" : "#181818" }}>
-                        <td style={{ padding: 12 }}>{item.id}</td>
-                        <td style={{ padding: 12 }}>{item.name}</td>
-                        <td style={{ padding: 12 }}>{item.category}</td>
-                        <td style={{ padding: 12 }}>{item.price !== null ? `₹${item.price}` : "N/A"}</td>
-                        <td style={{ padding: 12 }}>{item.image && <img src={item.image} alt="img" style={{ width: 48, borderRadius: 6, objectFit: "cover" }} />}</td>
+                    {orders.map((order) => (
+                      <tr key={order.id} style={{ borderBottom: "1px solid #ddd" }}>
+                        <td style={{ padding: 12 }}>{order.id}</td>
+                        <td style={{ padding: 12 }}>{order.items}</td>
+                        <td style={{ padding: 12 }}>{order.name}</td>
+                        <td style={{ padding: 12 }}>{order.phone}</td>
+                        <td style={{ padding: 12 }}>{formatIST(order.created_at)}</td>
                         <td style={{ padding: 12 }}>
-                          <button onClick={() => handleEditMenuItem(idx)} style={{ padding: "6px 12px", borderRadius: 6, border: "none", backgroundColor: "#007bff", color: "#fff", cursor: "pointer", marginRight: 8 }}>Edit</button>
-                          <button onClick={() => handleRemoveMenuItem(item.id)} style={{ padding: "6px 12px", borderRadius: 6, border: "none", backgroundColor: "#dc3545", color: "#fff", cursor: "pointer" }}>Remove</button>
+                          <span style={{ padding: "4px 8px", borderRadius: 4, backgroundColor: "#007bff", color: "#fff", fontWeight: "bold" }}>
+                            New
+                          </span>
                         </td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
-              </div>
-              {/* Image Picker Modal with upload */}
-              <ImagePicker open={showImagePicker} images={imgUrls} onSelect={url => { setNewItem(item => ({ ...item, image: url })); setShowPreview(true); }} onClose={() => setShowImagePicker(false)} onUpload={handleImageUpload} uploading={uploading} setUploading={setUploading} />
+              )}
             </div>
-          )}
+          </div>
+        )}
 
-          {/* --- ORDERS TAB --- */}
-          {tab === "orders" && (
-            <div>
-              <h2 style={{ fontSize: 24, marginBottom: 16 }}>Current Orders</h2>
-              <button onClick={clearOrders} style={{ marginBottom: 16, padding: "8px 16px", cursor: "pointer", backgroundColor: "#dc3545", color: "#fff", border: "none", borderRadius: 4 }}>
-                Clear All Orders
-              </button>
-              <div style={{ maxHeight: 600, overflowY: "auto", marginBottom: 24 }}>
-                {orders.length === 0 ? (
-                  <p style={{ textAlign: "center", color: "#888" }}>No new orders</p>
-                ) : (
-                  <table style={{ width: "100%", borderCollapse: "collapse" }}>
-                    <thead>
-                      <tr style={{ backgroundColor: "#f2f2f2", borderBottom: "2px solid #007bff" }}>
-                        <th style={{ padding: 12, textAlign: "left" }}>ID</th>
-                        <th style={{ padding: 12, textAlign: "left" }}>Items</th>
-                        <th style={{ padding: 12, textAlign: "left" }}>Name</th>
-                        <th style={{ padding: 12, textAlign: "left" }}>Phone</th>
-                        <th style={{ padding: 12, textAlign: "left" }}>Date</th>
-                        <th style={{ padding: 12, textAlign: "left" }}>Status</th>
+        {/* History Tab */}
+        {tab === "history" && (
+          <div className="table-container">
+            <h2 style={{ fontSize: 24, marginBottom: 16, color: "#fff" }}>Order History</h2>
+            <div style={{ maxHeight: 600, overflowY: "auto" }}>
+              {history.length === 0 ? (
+                <p style={{ textAlign: "center", color: "#888" }}>No order history found</p>
+              ) : (
+                <table style={{ width: "100%", borderCollapse: "collapse" }}>
+                  <thead>
+                    <tr style={{ backgroundColor: "#f2f2f2", borderBottom: "2px solid #007bff" }}>
+                      <th style={{ padding: 12, textAlign: "left" }}>ID</th>
+                      <th style={{ padding: 12, textAlign: "left" }}>Items</th>
+                      <th style={{ padding: 12, textAlign: "left" }}>Name</th>
+                      <th style={{ padding: 12, textAlign: "left" }}>Phone</th>
+                      <th style={{ padding: 12, textAlign: "left" }}>Date</th>
+                      <th style={{ padding: 12, textAlign: "left" }}>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {history.map((order) => (
+                      <tr key={order.id} style={{ borderBottom: "1px solid #ddd" }}>
+                        <td style={{ padding: 12 }}>{order.id}</td>
+                        <td style={{ padding: 12 }}>{order.items}</td>
+                        <td style={{ padding: 12 }}>{order.name}</td>
+                        <td style={{ padding: 12 }}>{order.phone}</td>
+                        <td style={{ padding: 12 }}>{formatIST(order.created_at)}</td>
+                        <td style={{ padding: 12 }}>
+                          <span style={{ padding: "4px 8px", borderRadius: 4, backgroundColor: "#28a745", color: "#fff", fontWeight: "bold" }}>
+                            Completed
+                          </span>
+                        </td>
                       </tr>
-                    </thead>
-                    <tbody>
-                      {orders.map((order) => (
-                        <tr key={order.id} style={{ borderBottom: "1px solid #ddd" }}>
-                          <td style={{ padding: 12 }}>{order.id}</td>
-                          <td style={{ padding: 12 }}>{order.items}</td>
-                          <td style={{ padding: 12 }}>{order.name}</td>
-                          <td style={{ padding: 12 }}>{order.phone}</td>
-                          <td style={{ padding: 12 }}>{formatIST(order.created_at)}</td>
-                          <td style={{ padding: 12 }}>
-                            <span style={{ padding: "4px 8px", borderRadius: 4, backgroundColor: "#007bff", color: "#fff", fontWeight: "bold" }}>
-                              New
-                            </span>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                )}
-              </div>
+                    ))}
+                  </tbody>
+                </table>
+              )}
             </div>
-          )}
-
-          {/* --- HISTORY TAB --- */}
-          {tab === "history" && (
-            <div>
-              <h2 style={{ fontSize: 24, marginBottom: 16 }}>Order History</h2>
-              <div style={{ maxHeight: 600, overflowY: "auto" }}>
-                {history.length === 0 ? (
-                  <p style={{ textAlign: "center", color: "#888" }}>No order history found</p>
-                ) : (
-                  <table style={{ width: "100%", borderCollapse: "collapse" }}>
-                    <thead>
-                      <tr style={{ backgroundColor: "#f2f2f2", borderBottom: "2px solid #007bff" }}>
-                        <th style={{ padding: 12, textAlign: "left" }}>ID</th>
-                        <th style={{ padding: 12, textAlign: "left" }}>Items</th>
-                        <th style={{ padding: 12, textAlign: "left" }}>Name</th>
-                        <th style={{ padding: 12, textAlign: "left" }}>Phone</th>
-                        <th style={{ padding: 12, textAlign: "left" }}>Date</th>
-                        <th style={{ padding: 12, textAlign: "left" }}>Status</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {history.map((order) => (
-                        <tr key={order.id} style={{ borderBottom: "1px solid #ddd" }}>
-                          <td style={{ padding: 12 }}>{order.id}</td>
-                          <td style={{ padding: 12 }}>{order.items}</td>
-                          <td style={{ padding: 12 }}>{order.name}</td>
-                          <td style={{ padding: 12 }}>{order.phone}</td>
-                          <td style={{ padding: 12 }}>{formatIST(order.created_at)}</td>
-                          <td style={{ padding: 12 }}>
-                            <span style={{ padding: "4px 8px", borderRadius: 4, backgroundColor: "#28a745", color: "#fff", fontWeight: "bold" }}>
-                              Completed
-                            </span>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                )}
-              </div>
-            </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </>
   );
