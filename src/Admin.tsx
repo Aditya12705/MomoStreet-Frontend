@@ -301,7 +301,7 @@ const imgFiles = [
   "virgin mojito.jpg",
   "watermelon mojito.jpg"
 ];
-const backendImgUrl = (file: string) => `https://momostreet-backend.onrender.com/img/${encodeURIComponent(file)}`;
+const backendImgUrl = (file: string) => `https://momostreet-backend-pfgd.onrender.com/img/${encodeURIComponent(file)}`;
 
 export default function Admin() {
   const [tab, setTab] = useState<Tab>("orders");
@@ -329,7 +329,7 @@ export default function Admin() {
   const [insertPosition, setInsertPosition] = useState<string>("0");
   const [uploading, setUploading] = useState(false);
 
-  const API_URL = "https://momostreet-backend.onrender.com";
+  const API_URL = "https://momostreet-backend-pfgd.onrender.com";
 
   // --- ORDERS ---
   useEffect(() => {
