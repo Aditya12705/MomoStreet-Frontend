@@ -72,6 +72,7 @@ header {
   display: flex;
   align-items: center;
   justify-content: center;
+  justify-content: center;
   transition: all 0.3s ease;
   z-index: 1000;
   gap: 0.5em;
@@ -93,6 +94,7 @@ header {
   font-size: 0.9em;
   display: flex;
   align-items: center;
+  justify-content: center;
   justify-content: center;
   font-weight: 700;
   box-shadow: 0 2px 8px rgba(0,0,0,0.2);
@@ -245,6 +247,7 @@ body, .dark-bg {
   font-size: 1.18rem;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 0.5em;
 }
 .dot {
@@ -343,9 +346,10 @@ body, .dark-bg {
   background: #232323;
   z-index: 10;
   box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-  padding: 0.5em 0.5em 0.5em 0.5em;
+  padding: 0.5em 1em;
   display: flex;
   align-items: center;
+  justify-content: center;
 }
 .hamburger {
   display: none;
@@ -354,8 +358,10 @@ body, .dark-bg {
   background: none;
   border: none;
   cursor: pointer;
-  margin-right: 1em;
+  margin-right: 0;
   padding: 8px;
+  position: absolute;
+  left: 1em;
 }
 .hamburger span {
   display: block;
@@ -365,21 +371,84 @@ body, .dark-bg {
   border-radius: 2px;
   transition: all 0.2s;
 }
-.nav-list {
-  display: flex;
-  gap: 1em;
-  overflow-x: auto;
-  transition: max-height 0.3s;
-}
+.hamburger span {
+    transition: all 0.3s ease-in-out;
+  }
+
+  .hamburger span:nth-child(1).open {
+    transform: translateY(7px) rotate(45deg);
+  }
+
+  .hamburger span:nth-child(2).open {
+    opacity: 0;
+  }
+
+  .hamburger span:nth-child(3).open {
+    transform: translateY(-7px) rotate(-45deg);
+  }
+
+  .nav-list {
+    display: flex;
+    gap: 0.5em;
+    flex-wrap: wrap;
+    overflow-x: hidden;
+    transition: max-height 0.3s ease-in-out;
+    justify-content: center;
+    margin: 0.5em 0;
+  }
+
+  .nav-list:not(.nav-open) {
+    max-height: 50px; /* Approximate height of one row of buttons */
+    overflow: hidden;
+  }
+
+  .nav-list.nav-open {
+    max-height: 500px; /* Sufficiently large to show all content */
+  }
+
+  @media (max-width: 768px) {
+    .hamburger {
+      display: flex;
+    }
+    .subcat-nav {
+      justify-content: flex-start;
+      padding-left: 4em; /* Make space for hamburger */
+    }
+    .nav-list {
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      padding: 0;
+      margin-top: 1em;
+    }
+    .nav-link {
+      width: 90%;
+      max-width: 300px;
+      margin-bottom: 0.5em;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .subcat-nav {
+      padding-left: 3em;
+    }
+    .nav-link {
+      font-size: 1em;
+      padding: 0.6em 1em;
+    }
+  }
 .nav-link {
-  padding: 0.4em 1em;
-  border-radius: 20px;
+  padding: 0.6em 1.2em;
+  border-radius: 25px;
   background: #333;
   color: #fff;
   font-weight: 600;
   cursor: pointer;
   white-space: nowrap;
-  transition: background 0.2s, color 0.2s;
+  transition: background 0.2s, color 0.2s, transform 0.2s;
+  flex-grow: 1;
+  text-align: center;
+  min-width: 120px; /* Ensure a minimum width for buttons */
 }
 .nav-link:hover {
   background: #8b0000;
@@ -399,6 +468,7 @@ body, .dark-bg {
 .cart-page header {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 1em;
   background: none;
   color: #fff;
@@ -436,6 +506,7 @@ body, .dark-bg {
 .cart-actions {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 0.5em;
 }
 .cart-item button {
