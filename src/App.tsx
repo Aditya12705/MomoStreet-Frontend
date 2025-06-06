@@ -192,27 +192,28 @@ function MenuPage({
       <header className="main-header">
         <h1>MOMO STREET</h1>
         <button className="cart-btn" onClick={() => navigate("/cart")}>
-          Cart
+          <span>Cart</span>
           {cart.length > 0 && <span className="cart-badge">{cart.reduce((a, b) => a + b.quantity, 0)}</span>}
         </button>
       </header>
       <nav className="subcat-nav">
-        <button className="hamburger" onClick={() => setNavOpen(!navOpen)}>
-          <span />
-          <span />
-          <span />
+        <button className="hamburger" onClick={() => setNavOpen(!navOpen)} aria-expanded={navOpen}>
+          <span className={navOpen ? "open" : ""}></span>
+          <span className={navOpen ? "open" : ""}></span>
+          <span className={navOpen ? "open" : ""}></span>
         </button>
-        <div className={`nav-list${navOpen ? " open" : ""}`}>
-          {navGroups.map(group => (
-            <div
-              key={group.subcategory}
-              className="nav-link"
-              onClick={() => scrollToSubcat(group.subcategory)}
-            >
-              {group.subcategory}
-            </div>
-          ))}
-        </div>
+        <nav className={`nav-list ${navOpen ? "nav-open" : ""}`}>
+          {navGroups.map((group) => (
+              <a
+                key={group.subcategory}
+                href={`#subcat-${group.subcategory.replace(/\s+/g, "-")}`}
+                className="nav-link"
+                onClick={() => scrollToSubcat(group.subcategory)}
+              >
+                {group.subcategory}
+              </a>
+            ))}
+        </nav>
       </nav>
       <div className="filter-bar">
         <button
