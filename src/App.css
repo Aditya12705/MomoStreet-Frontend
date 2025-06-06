@@ -72,7 +72,9 @@ header {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-wrap: wrap;
   justify-content: center;
+  flex-wrap: wrap;
   transition: all 0.3s ease;
   z-index: 1000;
   gap: 0.5em;
@@ -95,7 +97,9 @@ header {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-wrap: wrap;
   justify-content: center;
+  flex-wrap: wrap;
   font-weight: 700;
   box-shadow: 0 2px 8px rgba(0,0,0,0.2);
 }
@@ -137,6 +141,7 @@ body, .dark-bg {
 .filter-bar {
   display: flex;
   justify-content: center;
+  flex-wrap: wrap;
   gap: 1em;
   margin: 1em 0 1.5em 0;
 }
@@ -248,6 +253,7 @@ body, .dark-bg {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-wrap: wrap;
   gap: 0.5em;
 }
 .dot {
@@ -350,6 +356,7 @@ body, .dark-bg {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-wrap: wrap;
 }
 .hamburger {
   display: none;
@@ -394,6 +401,7 @@ body, .dark-bg {
     overflow-x: hidden;
     transition: max-height 0.3s ease-in-out;
     justify-content: center;
+  flex-wrap: wrap;
     margin: 0.5em 0;
   }
 
@@ -413,6 +421,7 @@ body, .dark-bg {
     .subcat-nav {
       justify-content: flex-start;
       padding-left: 4em; /* Make space for hamburger */
+      flex-wrap: nowrap; /* Prevent wrapping when hamburger is active */
     }
     .nav-list {
       flex-direction: column;
@@ -425,6 +434,12 @@ body, .dark-bg {
       width: 90%;
       max-width: 300px;
       margin-bottom: 0.5em;
+    }
+  }
+
+  @media (min-width: 769px) {
+    .subcat-nav {
+      justify-content: center; /* Center nav items when hamburger is not displayed */
     }
   }
 
@@ -444,7 +459,7 @@ body, .dark-bg {
   color: #fff;
   font-weight: 600;
   cursor: pointer;
-  white-space: nowrap;
+  /* white-space: nowrap; */
   transition: background 0.2s, color 0.2s, transform 0.2s;
   flex-grow: 1;
   text-align: center;
@@ -469,6 +484,7 @@ body, .dark-bg {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-wrap: wrap;
   gap: 1em;
   background: none;
   color: #fff;
@@ -507,6 +523,7 @@ body, .dark-bg {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-wrap: wrap;
   gap: 0.5em;
 }
 .cart-item button {
@@ -718,11 +735,29 @@ body, .dark-bg {
   .main-header h1 {
     font-size: 2.2rem;
   }
+}
+
+@media (max-width: 768px) {
   .cart-btn {
     right: 1rem;
-    top: 1.2rem;
-    font-size: 1em;
-    padding: 0.5em 1em;
+    bottom: 1rem;
+    top: auto; /* Override top position for mobile */
+    font-size: 1.1em;
+    width: 4rem;
+    height: 4rem;
+    padding: 0; /* Remove padding to let width/height control size */
+    border-radius: 50%; /* Ensure it's round */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+  }
+  .cart-btn span {
+    display: none; /* Hide text on mobile */
+  }
+  .cart-btn::before {
+    content: '🛒'; /* Shopping cart emoji */
+    font-size: 1.5em;
   }
 }
 
@@ -738,13 +773,6 @@ body, .dark-bg {
   .main-header h1 {
     font-size: 1.5rem;
     margin-bottom: 0.5rem;
-  }
-  .cart-btn {
-    right: 1rem;
-    bottom: 1rem;
-    font-size: 0.95em;
-    width: 3.5rem;
-    height: 3.5rem;
   }
   .menu-group-title {
     font-size: 1.1em;
