@@ -401,17 +401,17 @@ body, .dark-bg {
     overflow-x: hidden;
     transition: max-height 0.3s ease-in-out;
     justify-content: center;
-  flex-wrap: wrap;
     margin: 0.5em 0;
   }
 
   .nav-list:not(.nav-open) {
-    max-height: 50px; /* Approximate height of one row of buttons */
+    max-height: 0; /* Collapse completely when not open */
     overflow: hidden;
   }
 
   .nav-list.nav-open {
     max-height: 500px; /* Sufficiently large to show all content */
+    overflow-x: hidden; /* Ensure no horizontal scroll when open */
   }
 
   @media (max-width: 768px) {
@@ -421,7 +421,7 @@ body, .dark-bg {
     .subcat-nav {
       justify-content: flex-start;
       padding-left: 4em; /* Make space for hamburger */
-      flex-wrap: nowrap; /* Prevent wrapping when hamburger is active */
+      flex-wrap: wrap; /* Allow wrapping on smaller screens */
     }
     .nav-list {
       flex-direction: column;
