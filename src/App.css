@@ -465,7 +465,14 @@ body, .dark-bg {
   transition: background 0.2s, color 0.2s, transform 0.2s;
   flex-grow: 1;
   text-align: center;
-  min-width: 120px; /* Ensure a minimum width for buttons */
+}
+
+@media (max-width: 768px) {
+  .nav-link {
+    width: auto; /* Allow width to adjust based on content */
+    max-width: 300px;
+    margin-bottom: 1em; /* Increased vertical spacing */
+  }
 }
 .nav-link:hover {
   background: #8b0000;
