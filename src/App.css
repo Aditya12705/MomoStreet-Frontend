@@ -410,8 +410,9 @@ body, .dark-bg {
   }
 
   .nav-list.nav-open {
-    max-height: 500px; /* Sufficiently large to show all content */
+    max-height: 1000px; /* Increased to ensure all content is shown */
     overflow-x: hidden; /* Ensure no horizontal scroll when open */
+    overflow-y: auto; /* Allow vertical scrolling if content exceeds height */
   }
 
   @media (max-width: 768px) {
@@ -422,6 +423,7 @@ body, .dark-bg {
       justify-content: flex-start;
       padding-left: 4em; /* Make space for hamburger */
       flex-wrap: wrap; /* Allow wrapping on smaller screens */
+      overflow-x: hidden; /* Ensure no horizontal scroll within subcat-nav */
     }
     .nav-list {
       flex-direction: column;
@@ -854,6 +856,7 @@ body, .dark-bg {
 /* Smooth scrolling for the entire app */
 html {
   scroll-behavior: smooth;
+  overflow-x: hidden;
 }
 
 /* Loading animation */
