@@ -10,7 +10,7 @@ type Order = {
 };
 
 type MenuItem = {
-  id: number;
+  id: string;
   name: string;
   extras?: string;
   price: number | null;
@@ -309,7 +309,7 @@ export default function Admin() {
   const [menu, setMenu] = useState<MenuItem[]>([]);
   const [history, setHistory] = useState<Order[]>([]);
   const [newItem, setNewItem] = useState<MenuItem>({
-    id: 0,
+    id: "",
     name: "",
     extras: "",
     price: null,
@@ -396,8 +396,7 @@ export default function Admin() {
       setToast("Please fill all fields");
       return;
     }
-    const maxId = menu.reduce((max, item) => Math.max(max, item.id), 0);
-    const itemToAdd = { ...newItem, id: maxId + 1 };
+    const itemToAdd = { ...newItem, id: typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).slice(2) };
     // Find the index in the full menu where the new item should be inserted
     let insertIdx = 0;
     let count = 0;
@@ -419,14 +418,14 @@ export default function Admin() {
       ...menu.slice(insertIdx)
     ];
     await saveMenuToBackend(updatedMenu);
-    setNewItem({ id: 0, name: "", extras: "", price: null, image: "", category: "" });
+    setNewItem({ id: "", name: "", extras: "", price: null, image: "", category: "" });
     setEditIdx(null);
     setShowPreview(false);
     setInsertPosition("0");
     setToast("Menu item added!");
   };
 
-  const handleRemoveMenuItem = async (id: number) => {
+  const handleRemoveMenuItem = async (id: string) => {
     const updatedMenu = menu.filter((item) => item.id !== id);
     await saveMenuToBackend(updatedMenu);
     setToast("Menu item removed");
@@ -443,7 +442,7 @@ export default function Admin() {
     const updatedMenu = menu.map((item, idx) => (idx === editIdx ? { ...newItem, id: item.id } : item));
     await saveMenuToBackend(updatedMenu);
     setEditIdx(null);
-    setNewItem({ id: 0, name: "", extras: "", price: null, image: "", category: "" });
+    setNewItem({ id: "", name: "", extras: "", price: null, image: "", category: "" });
     setShowPreview(false);
     setToast("Menu item updated!");
   };
