@@ -191,8 +191,7 @@ function MenuPage({
     <div className="menu-app dark-bg">
       <header className="main-header">
         <h1>MOMO STREET</h1>
-        <button className="cart-btn" onClick={() => navigate("/cart")}>
-          <span>Cart</span>
+        <button className="cart-btn" onClick={() => navigate("/cart")}> 
           {cart.length > 0 && <span className="cart-badge">{cart.reduce((a, b) => a + b.quantity, 0)}</span>}
         </button>
       </header>
