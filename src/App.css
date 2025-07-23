@@ -55,6 +55,7 @@ header {
   border-radius: 0 0 16px 16px;
   position: relative;
 }
+/* Cart button styles */
 .cart-btn {
   position: fixed;
   right: 2rem;
@@ -79,6 +80,12 @@ header {
   z-index: 1000;
   gap: 0.5em;
   z-index: 100;
+}
+/* Always show cart symbol on cart button */
+.cart-btn::before {
+  content: '🛒';
+  font-size: 1.5em;
+  margin-right: 0.5em;
 }
 .cart-btn:hover {
   transform: scale(1.05);
@@ -763,10 +770,6 @@ body, .dark-bg {
   }
   .cart-btn span {
     display: none; /* Hide text on mobile */
-  }
-  .cart-btn::before {
-    content: '🛒'; /* Shopping cart emoji */
-    font-size: 1.5em;
   }
 }
 
