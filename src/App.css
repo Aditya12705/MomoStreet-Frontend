@@ -771,6 +771,9 @@ body, .dark-bg {
   .cart-btn span {
     display: none; /* Hide text on mobile */
   }
+  .cart-btn::before {
+    margin-right: 0;
+  }
 }
 
 @media (max-width: 700px) {
